@@ -246,17 +246,23 @@ const PLACEHOLDER_PHOTOS = [
 ];
 
 export default function HomePage() {
-        const [photos, setPhotos] = useState(PLACEHOLDER_PHOTOS);
+        const API_URL = process.env.REACT_APP_API_URL;
+        const USE_API_URL = process.env.REACT_APP_FEATURE_FLAG === "true";
+        console.log("API URL:", API_URL);
+        const [photos, setPhotos] = useState([]);
 
         useEffect(() => {
-                //returns json containing all the imageUrls and placeholderUrls
                 const loadPhotos = async () => {
-                        const res = await fetch("/api/photos");
-                        const data = await res.json();
-                        setPhotos(data);
+                        if (!USE_API_URL || !API_URL) {
+                                setPhotos(PLACEHOLDER_PHOTOS);
+                        } else {
+                                const res = await fetch(`${API_URL}/api/photo`);
+                                const data = await res.json();
+                                setPhotos(data);
+                        }
                 };
                 loadPhotos();
-        }, []);
+        }, [API_URL, USE_API_URL]);
 
         const navigate = useNavigate();
 
