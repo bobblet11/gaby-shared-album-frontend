@@ -57,7 +57,8 @@ export default function PhotoBoard({ photos = [] }) {
                                 throw new Error(`Delete failed: ${response.statusText}`);
                         }
                         const result = await response.json();
-                        console.log("Delete successful:", result);
+                        alert("Delete successful:", result);
+                        window.location.reload(false);
                 }
         };
 
@@ -84,10 +85,7 @@ export default function PhotoBoard({ photos = [] }) {
                                                         </TransformComponent>
                                                 </TransformWrapper>
 
-                                                <button
-                                                        className="photo-modal-delete "
-                                                        onClick={() => deletePhoto(openPhoto)}
-                                                >
+                                                <button className="photo-modal-delete " onClick={() => deletePhoto(openPhoto)}>
                                                         Delete
                                                 </button>
                                         </div>
