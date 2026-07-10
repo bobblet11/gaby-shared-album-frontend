@@ -215,12 +215,25 @@ body {
         display: none;
 }
 
+.upload-preview-slider {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        padding: 10px 0;
+        scroll-snap-type: x mandatory;
+}
+
+.upload-preview-item {
+        flex: 0 0 auto;
+        scroll-snap-align: center;
+        margin:auto;
+}
+
 .upload-preview {
-        max-width: 100%;
-        max-height: 300px;
-        border-radius: 6px;
+        max-height: 180px;
+        border-radius: 8px;
+        object-fit: cover;
         display: block;
-        margin: 0 auto;
 }
 
 /* File upload button (inside dropzone) */
@@ -411,7 +424,8 @@ body {
         }
 
         .upload-preview {
-                max-height: 220px;
+                max-height: 140px;
+                border-radius: 6px;
         }
 
         .photo-modal-delete {

@@ -20,8 +20,11 @@ export default function UploadPage() {
         const [file, setFile] = useState(null);
         const [dragOver, setDragOver] = useState(false);
 
-        const previewUrl = useMemo(() => {
-                return file ? URL.createObjectURL(file) : "";
+        const [isMultipleFilesSelected, setIsMultipleFilesSelected] = useState(false);
+
+        const previewUrls = useMemo(() => {
+                if (!file || file.length === 0) return [];
+                return file.map((f) => URL.createObjectURL(f));
         }, [file]);
 
         const onUpload = async (formData) => {
@@ -71,22 +74,25 @@ export default function UploadPage() {
 
         const handleSubmit = async (e) => {
                 e.preventDefault();
-                if (!file) {
-                        alert("Please select an image before uploading.");
+                if (!file || file.length === 0) {
+                        alert("Please select at least one image before uploading.");
                         return;
                 }
 
-                // Validate
-                if (!validateInputs(title, caption)) return;
-
-                // Sanitize
-                const safeTitle = sanitizeInput(title);
-                const safeCaption = sanitizeInput(caption);
-
                 const formData = new FormData();
-                formData.append("title", safeTitle);
-                formData.append("caption", safeCaption);
-                formData.append("image", file);
+
+                if (file.length === 1) {
+                        // Single file: validate + sanitize
+                        if (!validateInputs(title, caption)) return;
+                        const safeTitle = sanitizeInput(title);
+                        const safeCaption = sanitizeInput(caption);
+                        formData.append("title", safeTitle);
+                        formData.append("caption", safeCaption);
+                        formData.append("image", file[0]);
+                } else {
+                        // Multiple files: skip title/caption
+                        file.forEach((f) => formData.append("image", f));
+                }
 
                 await onUpload?.(formData);
         };
@@ -120,17 +126,42 @@ export default function UploadPage() {
                                                 }}
                                                 onDragLeave={() => setDragOver(false)}
                                         >
-                                                {previewUrl ? <img className="upload-preview" src={previewUrl} alt="Preview" /> : <p>Drag and drop an image here, or tap below to select</p>}
+                                                {previewUrls.length > 0 ? (
+                                                        <div className="upload-preview-slider">
+                                                                {previewUrls.map((url, idx) => (
+                                                                        <div key={idx} className="upload-preview-item">
+                                                                                <img className="upload-preview" src={url} alt={`Preview ${idx}`} />
+                                                                        </div>
+                                                                ))}
+                                                        </div>
+                                                ) : (
+                                                        <p>Drag and drop images here, or tap below to select</p>
+                                                )}
 
-                                                {/* Mobile-friendly file input */}
                                                 <label className="file-upload-button">
-                                                        Select Image
-                                                        <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] || null)} style={{ display: "none" }} />
+                                                        Select Images
+                                                        <input
+                                                                type="file"
+                                                                accept="image/*"
+                                                                multiple
+                                                                onChange={(e) => {
+                                                                        const files = Array.from(e.target.files);
+
+                                                                        if (files.length > 1) {
+                                                                                setIsMultipleFilesSelected(false);
+                                                                        } else {
+                                                                                setIsMultipleFilesSelected(true);
+                                                                        }
+
+                                                                        setFile(Array.from(e.target.files));
+                                                                }}
+                                                                style={{ display: "none" }}
+                                                        />
                                                 </label>
                                         </div>
 
-                                        <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} />
-                                        <textarea placeholder="Caption" value={caption} onChange={(e) => setCaption(e.target.value)} />
+                                        {isMultipleFilesSelected ? <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} /> : <></>}
+                                        {isMultipleFilesSelected ? <textarea placeholder="Caption" value={caption} onChange={(e) => setCaption(e.target.value)} /> : <></>}
 
                                         <button type="submit">Upload</button>
                                 </form>
