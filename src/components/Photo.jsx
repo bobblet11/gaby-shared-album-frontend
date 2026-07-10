@@ -1,8 +1,25 @@
 import React, { useState } from "react";
 
 
-export default function Photo({ id, title, date, caption, imageUrl, placeholderUrl, rotation = 0, size = 1, offsetX = 0, offsetY = 0, onOpenPhoto }) {
+export default function Photo({ id, title, date, caption, image_endpoint, placeholder_endpoint, rotation = 0, size = 1, offsetX = 0, offsetY = 0, onOpenPhoto }) {
         const [isLoaded, setIsLoaded] = useState(false);
+        
+        const API_URL = process.env.REACT_APP_API_URL;
+
+        function resolvePhotoUrl(value) {
+              // If it starts with http:// or https://, treat as full URL
+              if (/^https?:\/\//i.test(value)) {
+                return value;
+              }
+              console.log(value)
+              console.log( `${API_URL}/media/${value}`)
+              // Otherwise, assume it's an endpoint and prepend API_URL
+              return `${API_URL}/media/${value}`;
+        }
+
+        const checkedImageUrl = resolvePhotoUrl(image_endpoint);
+        const checkedPlaceholderUrl = resolvePhotoUrl(placeholder_endpoint);
+
 
         return (
                 <div
@@ -22,7 +39,7 @@ export default function Photo({ id, title, date, caption, imageUrl, placeholderU
                                 const photo = {
                                         id,
                                         title,
-                                        imageUrl,
+                                        checkedImageUrl,
                                 };
                                 onOpenPhoto(photo);
                         }}
@@ -31,8 +48,8 @@ export default function Photo({ id, title, date, caption, imageUrl, placeholderU
                 >
                         <div className="photo-inner">
                                 <div className="photo-image-wrap">
-                                        {placeholderUrl && !isLoaded && <img className="photo-image photo-placeholder" src={placeholderUrl} alt={title} />}
-                                        <img className="photo-image" src={imageUrl} alt={title} loading="lazy" onLoad={() => setIsLoaded(true)} />
+                                        {checkedPlaceholderUrl && !isLoaded && <img className="photo-image photo-placeholder" src={checkedPlaceholderUrl} alt={title} />}
+                                        <img className="photo-image" src={checkedImageUrl} alt={title} loading="lazy" onLoad={() => setIsLoaded(true)} />
                                         <div className="photo-filter" />
                                 </div>
 
