@@ -20,7 +20,6 @@ export default function Photo({ id, title, date, caption, image_endpoint, placeh
         const checkedImageUrl = resolvePhotoUrl(image_endpoint);
         const checkedPlaceholderUrl = resolvePhotoUrl(placeholder_endpoint);
 
-
         return (
                 <div
                         className="photo-card"
@@ -40,6 +39,8 @@ export default function Photo({ id, title, date, caption, image_endpoint, placeh
                                         id,
                                         title,
                                         checkedImageUrl,
+                                        image_endpoint,
+                                        placeholder_endpoint,
                                 };
                                 onOpenPhoto(photo);
                         }}

@@ -9,7 +9,8 @@ function rand(min, max) {
 export default function PhotoBoard({ photos = [] }) {
         const boardRef = useRef(null);
         const [openPhoto, setOpenPhoto] = useState(null);
-
+        const API_URL = process.env.REACT_APP_API_URL;
+        const USE_API_URL = process.env.REACT_APP_FEATURE_FLAG === "true";
         const items = useMemo(() => {
                 const count = photos.length;
 
@@ -35,6 +36,31 @@ export default function PhotoBoard({ photos = [] }) {
                 });
         }, [photos]);
 
+        const deletePhoto = async (photo) => {
+                if (!USE_API_URL || !API_URL) {
+                        alert("deleted photo");
+                } else {
+                        console.log({
+                                imageEndpoint: photo.image_endpoint,
+                                placeholderEndpoint: photo.placeholder_endpoint,
+                        });
+
+                        const response = await fetch(`${API_URL}/api/photo/delete`, {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                        imageEndpoint: photo.image_endpoint,
+                                        placeholderEndpoint: photo.placeholder_endpoint,
+                                }),
+                        });
+                        if (!response.ok) {
+                                throw new Error(`Delete failed: ${response.statusText}`);
+                        }
+                        const result = await response.json();
+                        console.log("Delete successful:", result);
+                }
+        };
+
         const onOpenPhoto = (photo) => {
                 if (openPhoto && photo.imageUrl === openPhoto.imageUrl) {
                         return;
@@ -57,6 +83,13 @@ export default function PhotoBoard({ photos = [] }) {
                                                                 <img className="photo-modal-image" src={openPhoto.checkedImageUrl} alt={openPhoto.title} />
                                                         </TransformComponent>
                                                 </TransformWrapper>
+
+                                                <button
+                                                        className="photo-modal-delete "
+                                                        onClick={() => deletePhoto(openPhoto)}
+                                                >
+                                                        Delete
+                                                </button>
                                         </div>
                                 </div>
                         )}
