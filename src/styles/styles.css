@@ -196,7 +196,7 @@ body {
 }
 
 .upload-card {
-        max-width: 500px;
+        max-width: min(500px, 95vw);
         margin: auto;
         background: white;
         border-radius: 12px;
