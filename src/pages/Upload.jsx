@@ -19,6 +19,7 @@ export default function UploadPage() {
         const [caption, setCaption] = useState("");
         const [file, setFile] = useState(null);
         const [dragOver, setDragOver] = useState(false);
+        const [isUploading, setIsUploading] = useState(false);
 
         const [isMultipleFilesSelected, setIsMultipleFilesSelected] = useState(false);
 
@@ -73,28 +74,34 @@ export default function UploadPage() {
         };
 
         const handleSubmit = async (e) => {
-                e.preventDefault();
-                if (!file || file.length === 0) {
-                        alert("Please select at least one image before uploading.");
-                        return;
+                try{
+                    e.preventDefault();
+                    setIsUploading(true);
+
+                    if (!file || file.length === 0) {
+                            alert("Please select at least one image before uploading.");
+                            return;
+                    }
+
+                    const formData = new FormData();
+
+                    if (file.length === 1) {
+                            // Single file: validate + sanitize
+                            if (!validateInputs(title, caption)) return;
+                            const safeTitle = sanitizeInput(title);
+                            const safeCaption = sanitizeInput(caption);
+                            formData.append("title", safeTitle);
+                            formData.append("caption", safeCaption);
+                            formData.append("image", file[0]);
+                    } else {
+                            // Multiple files: skip title/caption
+                            file.forEach((f) => formData.append("image", f));
+                    }
+
+                    await onUpload?.(formData);
+                }finally{
+                    setIsUploading(false);
                 }
-
-                const formData = new FormData();
-
-                if (file.length === 1) {
-                        // Single file: validate + sanitize
-                        if (!validateInputs(title, caption)) return;
-                        const safeTitle = sanitizeInput(title);
-                        const safeCaption = sanitizeInput(caption);
-                        formData.append("title", safeTitle);
-                        formData.append("caption", safeCaption);
-                        formData.append("image", file[0]);
-                } else {
-                        // Multiple files: skip title/caption
-                        file.forEach((f) => formData.append("image", f));
-                }
-
-                await onUpload?.(formData);
         };
 
         return (
@@ -112,6 +119,10 @@ export default function UploadPage() {
                                 </div>
 
                                 <form className="upload-form" onSubmit={handleSubmit}>
+
+
+                                        {isUploading && <div className="spinner"></div>}
+
                                         <div
                                                 className={`upload-dropzone ${dragOver ? "drag-over" : ""}`}
                                                 onDrop={(e) => {
@@ -156,14 +167,15 @@ export default function UploadPage() {
                                                                         setFile(Array.from(e.target.files));
                                                                 }}
                                                                 style={{ display: "none" }}
+                                                                disabled={isUploading}
                                                         />
                                                 </label>
                                         </div>
 
-                                        {isMultipleFilesSelected ? <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} /> : <></>}
-                                        {isMultipleFilesSelected ? <textarea placeholder="Caption" value={caption} onChange={(e) => setCaption(e.target.value)} /> : <></>}
+                                        {isMultipleFilesSelected ? <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} disabled={isUploading} /> : <></>}
+                                        {isMultipleFilesSelected ? <textarea placeholder="Caption" value={caption} onChange={(e) => setCaption(e.target.value)} disabled={isUploading} /> : <></>}
 
-                                        <button type="submit">Upload</button>
+                                        <button type="submit" disabled={isUploading} >Upload</button>
                                 </form>
                         </div>
                 </div>

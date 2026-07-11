@@ -37,6 +37,11 @@ export default function PhotoBoard({ photos = [] }) {
         }, [photos]);
 
         const deletePhoto = async (photo) => {
+
+                const confirmed = window.confirm("Are you sure you want to delete this photo?");
+                if (!confirmed) return; // stop if user cancels
+
+    
                 if (!USE_API_URL || !API_URL) {
                         alert("deleted photo");
                 } else {
