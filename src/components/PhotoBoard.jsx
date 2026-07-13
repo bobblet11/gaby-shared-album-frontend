@@ -173,6 +173,19 @@ export default function PhotoBoard({ photos = [] }) {
                 setIsEditingPhoto(false);
         };
 
+        const handleDownload = async () => {
+                const response = await fetch(openPhoto.checkedImageUrl);
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = openPhoto.title || "photo.jpg";
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                window.URL.revokeObjectURL(url);
+        };
+
         return (
                 <>
                         {openPhoto && (
@@ -215,6 +228,9 @@ export default function PhotoBoard({ photos = [] }) {
                                                 </TransformWrapper>
 
                                                 <div className="photo-modal-buttons">
+                                                        <button type="button" className="download-btn" onClick={handleDownload} disabled={isUploading}>
+                                                                V
+                                                        </button>
                                                         <button
                                                                 className="photo-modal-delete"
                                                                 onClick={() => {
