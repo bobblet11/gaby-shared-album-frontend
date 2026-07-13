@@ -17,4 +17,4 @@ npm install
 
 # ---------------------------------------------------------------------------- #
 echo "Building react app..."
-npm run build
+sudo npm run build
