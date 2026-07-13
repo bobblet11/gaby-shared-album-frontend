@@ -128,20 +128,21 @@ export default function PhotoBoard({ photos = [] }) {
                 try {
                         setIsUploading(true);
 
-                        const formData = new FormData();
-                        formData.append("title", sanitizeInput(editDraft.title));
-                        formData.append("caption", sanitizeInput(editDraft.caption));
-                        formData.append("imageEndpoint", sanitizeInput(editDraft.image_endpoint));
+                        const body = {
+                                title: sanitizeInput(editDraft.title),
+                                caption: sanitizeInput(editDraft.caption),
+                                imageEndpoint: sanitizeInput(editDraft.image_endpoint),
+                        };
 
                         if (USE_API_URL && API_URL) {
                                 const response = await fetch(`${API_URL}/api/photo/edit`, {
                                         method: "POST",
-                                        body: formData,
+                                        headers: { "Content-Type": "application/json" },
+                                        body: JSON.stringify(body),
                                 });
 
                                 if (!response.ok) throw new Error(`Upload failed: ${response.statusText}`);
                         }
-                        
                 } catch (error) {
                         console.error("Error editing file:", error);
                         alert("Failed to edit");
