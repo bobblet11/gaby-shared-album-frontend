@@ -228,20 +228,14 @@ export default function PhotoBoard({ photos = [] }) {
                                                 </TransformWrapper>
 
                                                 <div className="photo-modal-buttons">
-                                                        <button type="button" className="download-btn" onClick={handleDownload} disabled={isUploading}>
-                                                                V
+                                                        <button type="button" className="photo-modal-download" onClick={()=>handleDownload} disabled={isUploading}>
+                                                                <i className="fas fa-download" aria-hidden="true"></i>
                                                         </button>
-                                                        <button
-                                                                className="photo-modal-delete"
-                                                                onClick={() => {
-                                                                        deletePhoto();
-                                                                }}
-                                                                disabled={isEditingPhoto}
-                                                        >
-                                                                Delete
+                                                        <button className="photo-modal-delete" onClick={() => { deletePhoto() }} disabled={isEditingPhoto}>
+                                                                <i class="fa fa-trash" aria-hidden="true"></i>
                                                         </button>
-                                                        <button className="photo-modal-edit" onClick={() => setIsEditingPhoto(true)} disabled={isEditingPhoto}>
-                                                                Edit
+                                                        <button className="photo-modal-edit" onClick={()=>setIsEditingPhoto(true)} disabled={isEditingPhoto}>
+                                                                <i class="fas fa-edit" aria-hidden="true"></i>
                                                         </button>
                                                 </div>
                                         </div>
