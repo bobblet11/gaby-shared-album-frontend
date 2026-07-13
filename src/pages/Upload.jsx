@@ -28,6 +28,8 @@ export default function UploadPage() {
                 return file.map((f) => URL.createObjectURL(f));
         }, [file]);
 
+        const MAX_FILE_UPLOAD = 15;
+
         const onUpload = async (formData) => {
                 try {
                         if (USE_API_URL && API_URL) {
@@ -74,33 +76,38 @@ export default function UploadPage() {
         };
 
         const handleSubmit = async (e) => {
-                try{
-                    e.preventDefault();
-                    setIsUploading(true);
+                try {
+                        e.preventDefault();
+                        setIsUploading(true);
 
-                    if (!file || file.length === 0) {
-                            alert("Please select at least one image before uploading.");
-                            return;
-                    }
+                        if (!file || file.length === 0) {
+                                alert("Please select at least one image before uploading.");
+                                return;
+                        }
 
-                    const formData = new FormData();
+                        if (file.length > MAX_FILE_UPLOAD) {
+                                alert(`Please select fewer than ${MAX_FILE_UPLOAD} images.`);
+                                return;
+                        }
 
-                    if (file.length === 1) {
-                            // Single file: validate + sanitize
-                            if (!validateInputs(title, caption)) return;
-                            const safeTitle = sanitizeInput(title);
-                            const safeCaption = sanitizeInput(caption);
-                            formData.append("title", safeTitle);
-                            formData.append("caption", safeCaption);
-                            formData.append("image", file[0]);
-                    } else {
-                            // Multiple files: skip title/caption
-                            file.forEach((f) => formData.append("image", f));
-                    }
+                        const formData = new FormData();
 
-                    await onUpload?.(formData);
-                }finally{
-                    setIsUploading(false);
+                        if (file.length === 1) {
+                                // Single file: validate + sanitize
+                                if (!validateInputs(title, caption)) return;
+                                const safeTitle = sanitizeInput(title);
+                                const safeCaption = sanitizeInput(caption);
+                                formData.append("title", safeTitle);
+                                formData.append("caption", safeCaption);
+                                formData.append("image", file[0]);
+                        } else {
+                                // Multiple files: skip title/caption
+                                file.forEach((f) => formData.append("image", f));
+                        }
+
+                        await onUpload?.(formData);
+                } finally {
+                        setIsUploading(false);
                 }
         };
 
@@ -119,8 +126,6 @@ export default function UploadPage() {
                                 </div>
 
                                 <form className="upload-form" onSubmit={handleSubmit}>
-
-
                                         {isUploading && <div className="spinner"></div>}
 
                                         <div
@@ -146,7 +151,7 @@ export default function UploadPage() {
                                                                 ))}
                                                         </div>
                                                 ) : (
-                                                        <p>Drag and drop images here, or tap below to select</p>
+                                                        <p>{`Drag and drop images (at most ${MAX_FILE_UPLOAD}) here, or tap below to select`}</p>
                                                 )}
 
                                                 <label className="file-upload-button">
@@ -157,6 +162,11 @@ export default function UploadPage() {
                                                                 multiple
                                                                 onChange={(e) => {
                                                                         const files = Array.from(e.target.files);
+
+                                                                        if (file.length > MAX_FILE_UPLOAD) {
+                                                                                alert(`Please select fewer than ${MAX_FILE_UPLOAD} images.`);
+                                                                                return;
+                                                                        }
 
                                                                         if (files.length > 1) {
                                                                                 setIsMultipleFilesSelected(false);
@@ -175,7 +185,9 @@ export default function UploadPage() {
                                         {isMultipleFilesSelected ? <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} disabled={isUploading} /> : <></>}
                                         {isMultipleFilesSelected ? <textarea placeholder="Caption" value={caption} onChange={(e) => setCaption(e.target.value)} disabled={isUploading} /> : <></>}
 
-                                        <button type="submit" disabled={isUploading} >Upload</button>
+                                        <button type="submit" disabled={isUploading}>
+                                                Upload
+                                        </button>
                                 </form>
                         </div>
                 </div>
