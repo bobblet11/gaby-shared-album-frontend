@@ -8,31 +8,37 @@ body {
 }
 
 .spinner {
-  border: 6px solid #f3f3f3;
-  border-top: 6px solid #3498db;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
-  margin: 20px auto;
+        border: 6px solid #f3f3f3;
+        border-top: 6px solid #3498db;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+        0% {
+                transform: rotate(0deg);
+        }
+        100% {
+                transform: rotate(360deg);
+        }
 }
+
 
 .upload-form input[disabled],
 .upload-form textarea[disabled],
 .upload-form button[disabled],
+.photo-modal-delete button[disabled],
+.photo-modal-edit button[disabled],
 .upload-form .file-upload-button input[disabled] {
-  background-color: #e0e0e0;   /* light grey background */
-  color: #888;                 /* grey text */
-  cursor: not-allowed;         /* show blocked cursor */
-  opacity: 0.6;                /* fade out */
-  pointer-events: none;        /* prevent interaction */
+        background-color: #e0e0e0; /* light grey background */
+        color: #888; /* grey text */
+        cursor: not-allowed; /* show blocked cursor */
+        opacity: 0.6; /* fade out */
+        pointer-events: none; /* prevent interaction */
 }
-
 
 .photo-board {
         position: relative;
@@ -196,8 +202,10 @@ body {
 }
 
 .upload-card {
-        max-width: min(500px, 95vw);
+        width: min(90vw, 520px);
+        max-width: 520px;
         margin: auto;
+        flex: 0 0 auto;
         background: white;
         border-radius: 12px;
         padding: 24px;
@@ -207,12 +215,20 @@ body {
 .upload-header {
         text-align: center;
         margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
 }
 
 .upload-header h1 {
         font-size: clamp(1.5rem, 2.5vw, 1.8rem);
         color: #d63384;
         margin: 0;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
 }
 
 .upload-form {
@@ -253,7 +269,7 @@ body {
 .upload-preview-item {
         flex: 0 0 auto;
         scroll-snap-align: center;
-        margin:auto;
+        margin: auto;
 }
 
 .upload-preview {
@@ -390,10 +406,20 @@ body {
         display: block;
 }
 
-.photo-modal-delete {
+.photo-modal-buttons {
         position: absolute;
+        display: flex;
+        gap: 1rem;
         top: 50px;
         right: 50px;
+        z-index: 9998; /* ensure it sits above image */
+
+        justify-content: right;
+        align-items: center;
+        width: 200px;
+}
+
+.photo-modal-delete {
         background-color: #ff4d4d; /* brighter red for visibility */
         color: #fff;
         border: none;
@@ -406,7 +432,21 @@ body {
         transition:
                 background-color 0.2s ease,
                 transform 0.15s ease;
-        z-index: 10000; /* ensure it sits above image */
+}
+
+.photo-modal-edit {
+        background-color: #69ffb4; /* brighter red for visibility */
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 8px 14px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+        transition:
+                background-color 0.2s ease,
+                transform 0.15s ease;
 }
 
 .photo-modal-delete:hover {
@@ -417,6 +457,26 @@ body {
 .photo-modal-delete:active {
         background-color: #b71c1c; /* pressed state */
         transform: scale(0.95);
+}
+
+.photo-modal-edit:hover {
+        background-color: #12ec7f; /* darker red on hover */
+        transform: translateY(-2px);
+}
+
+.photo-modal-edit:active {
+        background-color: #69ffb4; /* pressed state */
+        transform: scale(0.95);
+}
+
+.close-btn {
+        width: 32px;
+        height: 32px;
+        border: none;
+        background: transparent;
+        font-size: 28px;
+        line-height: 1;
+        cursor: pointer;
 }
 
 @media (max-width: 1200px) {

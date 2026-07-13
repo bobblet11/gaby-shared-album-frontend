@@ -38,6 +38,7 @@ export default function Photo({ id, title, date, caption, image_endpoint, placeh
                                 const photo = {
                                         id,
                                         title,
+                                        caption,
                                         checkedImageUrl,
                                         image_endpoint,
                                         placeholder_endpoint,
