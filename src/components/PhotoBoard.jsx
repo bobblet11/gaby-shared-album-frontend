@@ -227,13 +227,13 @@ export default function PhotoBoard({ photos = [] }) {
                                                 </TransformWrapper>
 
                                                 <div className="photo-modal-buttons">
-                                                        <button type="button" className="photo-modal-download" onClick={() => handleDownload} disabled={isUploading}>
+                                                        <button type="button" className="photo-modal-download" onClick={() => { handleDownload() }} disabled={isUploading}>
                                                                 <i className="fas fa-download" aria-hidden="true"></i>
                                                         </button>
                                                         <button
                                                                 className="photo-modal-delete"
                                                                 onClick={() => {
-                                                                        deletePhoto();
+                                                                        deletePhoto(openPhoto);
                                                                 }}
                                                                 disabled={isEditingPhoto}
                                                         >
