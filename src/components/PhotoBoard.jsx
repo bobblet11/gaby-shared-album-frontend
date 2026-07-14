@@ -76,16 +76,12 @@ export default function PhotoBoard({ photos = [] }) {
         const deletePhoto = async (photo) => {
                 const confirmed = window.confirm("Are you sure you want to delete this photo?");
                 if (!confirmed) return; // stop if user cancels
-
+                console.log(openPhoto);
+                console.log(editDraft);
                 if (!USE_API_URL || !API_URL) {
-                        alert("deleted photo");
+                        alert("Delete successful:");
                         window.location.reload(false);
                 } else {
-                        console.log({
-                                imageEndpoint: photo.image_endpoint,
-                                placeholderEndpoint: photo.placeholder_endpoint,
-                        });
-
                         const response = await fetch(`${API_URL}/api/photo/delete`, {
                                 method: "POST",
                                 headers: { "Content-Type": "application/json" },
@@ -127,7 +123,8 @@ export default function PhotoBoard({ photos = [] }) {
 
                 try {
                         setIsUploading(true);
-
+                        console.log(openPhoto);
+                        console.log(editDraft);
                         const body = {
                                 title: sanitizeInput(editDraft.title),
                                 caption: sanitizeInput(editDraft.caption),
@@ -143,6 +140,8 @@ export default function PhotoBoard({ photos = [] }) {
 
                                 if (!response.ok) throw new Error(`Upload failed: ${response.statusText}`);
                         }
+
+                        alert("edited photo");
                 } catch (error) {
                         console.error("Error editing file:", error);
                         alert("Failed to edit");
@@ -228,14 +227,20 @@ export default function PhotoBoard({ photos = [] }) {
                                                 </TransformWrapper>
 
                                                 <div className="photo-modal-buttons">
-                                                        <button type="button" className="photo-modal-download" onClick={()=>handleDownload} disabled={isUploading}>
+                                                        <button type="button" className="photo-modal-download" onClick={() => handleDownload} disabled={isUploading}>
                                                                 <i className="fas fa-download" aria-hidden="true"></i>
                                                         </button>
-                                                        <button className="photo-modal-delete" onClick={() => { deletePhoto() }} disabled={isEditingPhoto}>
-                                                                <i class="fa fa-trash" aria-hidden="true"></i>
+                                                        <button
+                                                                className="photo-modal-delete"
+                                                                onClick={() => {
+                                                                        deletePhoto();
+                                                                }}
+                                                                disabled={isEditingPhoto}
+                                                        >
+                                                                <i className="fa fa-trash" aria-hidden="true"></i>
                                                         </button>
-                                                        <button className="photo-modal-edit" onClick={()=>setIsEditingPhoto(true)} disabled={isEditingPhoto}>
-                                                                <i class="fas fa-edit" aria-hidden="true"></i>
+                                                        <button className="photo-modal-edit" onClick={() => setIsEditingPhoto(true)} disabled={isEditingPhoto}>
+                                                                <i className="fas fa-edit" aria-hidden="true"></i>
                                                         </button>
                                                 </div>
                                         </div>
