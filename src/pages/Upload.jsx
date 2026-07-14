@@ -85,7 +85,6 @@ export default function UploadPage() {
                                 }
 
                                 const result = await response.json();
-                                console.log("Upload successful:", result);
                         } else {
                                 await new Promise((resolve) => setTimeout(resolve, 5000));
                         }
