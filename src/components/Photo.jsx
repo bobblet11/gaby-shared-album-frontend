@@ -11,8 +11,6 @@ export default function Photo({ id, title, date, caption, image_endpoint, placeh
               if (/^https?:\/\//i.test(value)) {
                 return value;
               }
-              console.log(value)
-              console.log( `${API_URL}/media/${value}`)
               // Otherwise, assume it's an endpoint and prepend API_URL
               return `${API_URL}/media/${value}`;
         }
