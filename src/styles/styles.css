@@ -7,6 +7,16 @@ body {
         overflow-x: hidden;
 }
 
+.spinner-overlay {
+        position: fixed; /* covers the whole viewport */
+        inset: 0; /* shorthand for top/right/bottom/left: 0 */
+        display: flex; /* flexbox centering */
+        align-items: center;
+        justify-content: center;
+        z-index: 10000; /* higher than backdrop and modal content */
+        background: rgba(0, 0, 0, 0); /* transparent overlay so you still see backdrop */
+}
+
 .spinner {
         border: 6px solid #f3f3f3;
         border-top: 6px solid #3498db;
@@ -26,12 +36,15 @@ body {
         }
 }
 
+button.upload-button[disabled],
 .upload-form input[disabled],
 .upload-form textarea[disabled],
 .upload-form button[disabled],
-.photo-modal-delete button[disabled],
-.photo-modal-edit button[disabled],
-.upload-form .file-upload-button input[disabled] {
+button.photo-modal-delete[disabled],
+button.photo-modal-edit[disabled],
+button.photo-modal-download[disabled],
+.upload-form 
+.file-upload-button input[disabled] {
         background-color: #e0e0e0; /* light grey background */
         color: #888; /* grey text */
         cursor: not-allowed; /* show blocked cursor */
@@ -380,6 +393,9 @@ body {
         inset: 0;
         z-index: 9999;
         background: rgba(0, 0, 0, 0.9);
+        top: 0;
+        left: 0;
+
         display: flex;
         align-items: center;
         justify-content: center;
@@ -528,8 +544,8 @@ body {
                 bottom: 5vh;
                 top: auto;
                 justify-content: space-around;
-                width:100vw;
-                left:0;
+                width: 100vw;
+                left: 0;
         }
 
         .upload-preview-slider {
